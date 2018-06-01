@@ -128,18 +128,32 @@ int main()
 		  // The cross track error is calculated by evaluating at polynomial at x, f(x)
 		  // and subtracting y.
           double cte = polyeval( coeffs, px ) - py;
-          // Due to the sign starting at 0, the orientation error is -f'(x).
-          // derivative of coeffs[0] + coeffs[1] * x -> coeffs[1]
-          double epsi = psi - atan(coeffs[1]);
+          double epsi = -atan( coeffs[ 1 ] );
 		  
 		  ////////////////////////////////////////
 		  //// STATE PREDICTION AFTER LATENCY ////
 		  ////////////////////////////////////////
-		  double latency = 0.1;
-		  //TODO continue here!
+		  const double latency = 0.1;
+		  const double Lf = 2.67;
+		  double delta = j [ 1 ] [ "steering_angle" ];
+		  double a = j [ 1 ] [ "throttle" ];
+		  // assumption: psi = 0.0
+		  const double pred_px 		= v * latency;
+          const double pred_py 		= 0.0;
+          const double pred_psi 	= v * delta / Lf * latency;
+          const double pred_v 		= v + a * latency;
+          const double pred_cte 	= cte + v * sin( epsi ) * latency;
+          const double pred_epsi 	= epsi + v * delta / Lf * latency;
+          Eigen::VectorXd state( 6 );
+		  state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
+
+		  ////////////////////////////
+		  //// SOLVING THE SYSTEM ////
+		  ////////////////////////////
+		  auto vars = mpc.Solve( state, coeffs );
 		  
-          double steer_value;
-          double throttle_value;
+          double steer_value    = vars[ 0 ] / ( deg2rad( 25 ) * Lf );
+          double throttle_value = vars[ 1 ];
 
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
