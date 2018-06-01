@@ -164,9 +164,16 @@ int main()
           //Display the MPC predicted trajectory 
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
-
+		  
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
+		  mpc_x_vals.push_back( state[ 0 ] );
+		  mpc_y_vals.push_back( state[ 1 ] );
+		  for( int i = 2; i < vars.size(); i += 2 )
+		  {
+			mpc_x_vals.push_back ( vars [ i ] );
+			mpc_y_vals.push_back ( vars [ i + 1 ] );
+		  }
 
           msgJson["mpc_x"] = mpc_x_vals;
           msgJson["mpc_y"] = mpc_y_vals;
@@ -177,6 +184,12 @@ int main()
 
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
+          const double x_increase = 2.5;
+          for (int i = 1; i < 15; i++) 
+		  {
+			next_x_vals.push_back( x_increase * i );
+            next_y_vals.push_back( polyeval( coeffs, x_increase * i ) );
+		  }
 
           msgJson["next_x"] = next_x_vals;
           msgJson["next_y"] = next_y_vals;
