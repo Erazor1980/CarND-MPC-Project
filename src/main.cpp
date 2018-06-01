@@ -125,9 +125,7 @@ int main()
 		  ///////////////////////////////////////////////////////////
 		  //// CALCULATING THE CROSS TRACK AND ORIENTATION ERROR ////
 		  ///////////////////////////////////////////////////////////
-		  // The cross track error is calculated by evaluating at polynomial at x, f(x)
-		  // and subtracting y.
-          double cte = polyeval( coeffs, px ) - py;
+          double cte = polyeval( coeffs, 0 );
           double epsi = -atan( coeffs[ 1 ] );
 		  
 		  ////////////////////////////////////////
@@ -140,7 +138,7 @@ int main()
 		  // assumption: psi = 0.0
 		  const double pred_px 		= v * latency;
           const double pred_py 		= 0.0;
-          const double pred_psi 	= v * delta / Lf * latency;
+          const double pred_psi 	= -v * delta / Lf * latency;
           const double pred_v 		= v + a * latency;
           const double pred_cte 	= cte + v * sin( epsi ) * latency;
           const double pred_epsi 	= epsi + v * delta / Lf * latency;
@@ -167,8 +165,8 @@ int main()
 		  
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Green line
-		  mpc_x_vals.push_back( state[ 0 ] );
-		  mpc_y_vals.push_back( state[ 1 ] );
+		  //mpc_x_vals.push_back( state[ 0 ] );
+		  //mpc_y_vals.push_back( state[ 1 ] );
 		  for( int i = 2; i < ( int )vars.size(); i += 2 )
 		  {
 			mpc_x_vals.push_back ( vars [ i ] );
