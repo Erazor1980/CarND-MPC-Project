@@ -99,6 +99,45 @@ int main()
           * Both are in between [-1, 1].
           *
           */
+		  
+		  //////////////////////////////////////////////////////////////////
+		  //// TRANSFORMING POINTS INTO VEHICLE COORDINATE SYSTEM (VCS) ////
+		  //////////////////////////////////////////////////////////////////
+		  Eigen::VectorXd vcs_x_pnts( ptsx.size() );
+		  Eigen::VectorXd vcs_y_pnts( ptsy.size() );
+		  for( int i = 0; i < ptsx.size(); ++i )
+		  {
+			  // first translate the points
+			  double x = ptsx[ i ] - px;
+			  double y = ptsy[ i ] - py;
+			  // then rotate them
+			  vcs_x_pnts [ i ] = x * cos( -psi ) - y * sin ( -psi );
+			  vcs_y_pnts [ i ] = x * sin( -psi ) + y * cos ( -psi );
+		  }
+		  
+		  ///////////////////////////////////////////////
+		  //// FITTING A POLYNOMIAL TO THE WAYPOINTS ////
+		  ///////////////////////////////////////////////
+		  // Pass the x and y waypoint coordinates along the order of the polynomial.
+		  // In this case, 3 (is enough for most driving scenarios!)
+		  auto coeffs = polyfit( vcs_x_pnts, vcs_y_pnts, 3 );
+		  
+		  ///////////////////////////////////////////////////////////
+		  //// CALCULATING THE CROSS TRACK AND ORIENTATION ERROR ////
+		  ///////////////////////////////////////////////////////////
+		  // The cross track error is calculated by evaluating at polynomial at x, f(x)
+		  // and subtracting y.
+          double cte = polyeval( coeffs, px ) - py;
+          // Due to the sign starting at 0, the orientation error is -f'(x).
+          // derivative of coeffs[0] + coeffs[1] * x -> coeffs[1]
+          double epsi = psi - atan(coeffs[1]);
+		  
+		  ////////////////////////////////////////
+		  //// STATE PREDICTION AFTER LATENCY ////
+		  ////////////////////////////////////////
+		  double latency = 0.1;
+		  //TODO continue here!
+		  
           double steer_value;
           double throttle_value;
 
