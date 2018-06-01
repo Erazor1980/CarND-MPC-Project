@@ -40,5 +40,8 @@ Following values have been chosen for the project:
 
 Several parameter combinations have been tried out during the development. Too high N led to very bad behaviour in the curves.
 
+## MPC Preprocessing
+In order to be able to fit the polynomial through the waypoints in the vehicle coordinate system, the original waypoints (from WCS) have to be transformed. It has been done by translation and then rotation (see main.cpp, lines 106-116).
+
 ## Model Predictive Control with Latency
-To deal with the given 0.1 seconds latency the state vector was fed with prediction values - where will the car be in 0.1 seconds (using the equations above, and the assumption psi = 0. See main.cpp, line 134-146). 
+To deal with the given 0.1 seconds latency the state vector was fed with prediction values - where will the car be in 0.1 seconds (using the equations above, and the assumption psi = 0. See main.cpp, lines 134-146). 
