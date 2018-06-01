@@ -65,7 +65,8 @@ Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
   return result;
 }
 
-int main() {
+int main() 
+{
   uWS::Hub h;
 
   // MPC is initialized here!
