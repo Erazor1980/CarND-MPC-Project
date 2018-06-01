@@ -105,7 +105,7 @@ int main()
 		  //////////////////////////////////////////////////////////////////
 		  Eigen::VectorXd vcs_x_pnts( ptsx.size() );
 		  Eigen::VectorXd vcs_y_pnts( ptsy.size() );
-		  for( int i = 0; i < ptsx.size(); ++i )
+		  for( int i = 0; i < ( int )ptsx.size(); ++i )
 		  {
 			  // first translate the points
 			  double x = ptsx[ i ] - px;
@@ -152,7 +152,7 @@ int main()
 		  ////////////////////////////
 		  auto vars = mpc.Solve( state, coeffs );
 		  
-          double steer_value    = vars[ 0 ] / ( deg2rad( 25 ) * Lf );
+          double steer_value    = -vars[ 0 ] / ( deg2rad( 25 ) * Lf );
           double throttle_value = vars[ 1 ];
 
           json msgJson;
@@ -169,7 +169,7 @@ int main()
           // the points in the simulator are connected by a Green line
 		  mpc_x_vals.push_back( state[ 0 ] );
 		  mpc_y_vals.push_back( state[ 1 ] );
-		  for( int i = 2; i < vars.size(); i += 2 )
+		  for( int i = 2; i < ( int )vars.size(); i += 2 )
 		  {
 			mpc_x_vals.push_back ( vars [ i ] );
 			mpc_y_vals.push_back ( vars [ i + 1 ] );
